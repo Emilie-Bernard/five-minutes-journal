@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -6,20 +6,39 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import Moment from "moment";
 import "moment/locale/fr";
+
 import { Formik } from "formik";
 
 export default function MorningForm({ date, chooseView }) {
   const moment = Moment(date && date).locale("fr");
+
+  const storeData = async (value) => {
+    const oldMorning = await AsyncStorage.getItem("morningForm");
+    let newMorning = JSON.parse(oldMorning);
+    if (!newMorning) {
+      newMorning = [];
+    }
+    newMorning.push(value);
+    await AsyncStorage.setItem("morningForm", JSON.stringify(newMorning));
+  };
+
   return (
     <Formik
       initialValues={{
+        date: date,
         affirmation: "",
         plan: "",
         gratitudes: { 1: "", 2: "", 3: "" },
       }}
-      onSubmit={(values) => console.log(values)}
+      onSubmit={(values) => {
+        storeData(values);
+        chooseView(0);
+      }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
         <View style={[styles.root]}>
@@ -71,13 +90,7 @@ export default function MorningForm({ date, chooseView }) {
             onBlur={handleBlur("affirmation")}
             value={values.affirmation}
           />
-          <TouchableOpacity
-            style={[styles.formButton]}
-            onPress={() => {
-              handleSubmit;
-              chooseView(0);
-            }}
-          >
+          <TouchableOpacity style={[styles.formButton]} onPress={handleSubmit}>
             <Text style={[styles.text, { color: "#FFD874" }]}>Valider</Text>
           </TouchableOpacity>
         </View>

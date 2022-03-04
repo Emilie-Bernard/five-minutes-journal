@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Calandar from "./src/Calandar";
 import DateSelected from "./src/DateSelected";
 import MorningForm from "./src/MorningForm";
@@ -9,6 +10,21 @@ export default function App() {
   const [date, setDate] = useState();
   const [view, setView] = useState(0);
 
+  const getDatas = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("morningForm");
+      if (jsonValue !== null) {
+        console.log(jsonValue);
+        const data = JSON.parse(jsonValue);
+      }
+    } catch (e) {
+      console.log("error");
+      console.log(e);
+    }
+  };
+
+  const data = getDatas();
+  console.log(data);
   const render = () => {
     switch(view) {
       case 0 :

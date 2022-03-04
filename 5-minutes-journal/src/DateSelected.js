@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Moment from "moment";
 import "moment/locale/fr";
 import { EVENING, MORNING } from "./constants";
@@ -7,6 +8,7 @@ import { EVENING, MORNING } from "./constants";
 export default function DateSelected({ date, chooseView }) {
   const [view, setView] = useState(MORNING);
   const moment = Moment(date && date).locale("fr");
+
   return (
     <View
       style={[styles.root, view === MORNING ? styles.yellow : styles.green]}
